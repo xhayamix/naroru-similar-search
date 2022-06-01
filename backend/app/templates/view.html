@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<br>
+<h2>新着なろう</h2>
+<hr>
+ 
+<br>
+<table class="table">
+    <thead class="table-dark">
+    <tr>
+        <th>#</th>
+        <th>タイトル</th>
+        <th>作者</th>
+        <th>更新日</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for t in nove %}
+    <tr>
+        <td>{{ t['id'] }}</td>
+        <td><a href="https://ncode.syosetu.com/" target="_blank">{{ t['title'] }}</a></td>
+        <td>{{ t['writer'] }}</td>
+        <td>{{ t['general_lastup'] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+ 
+{% endblock %}
