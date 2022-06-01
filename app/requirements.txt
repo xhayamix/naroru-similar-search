@@ -1,0 +1,11 @@
+pandas
+tqdm
+requests
+
+sqlalchemy
+mysqlclient
+mysql-connector-python
+PyMySQL
+
+mecab-python3==0.996.5
+gensim
