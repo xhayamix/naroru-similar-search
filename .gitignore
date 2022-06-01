@@ -1,0 +1,6 @@
+db/data/
+backend/app/doc2vec/
+backend/app/models/__pycache__/__init__.cpython-310.pyc
+backend/app/models/__pycache__/novel_datas.cpython-310.pyc
+backend/app/__pycache__/database.cpython-310.pyc
+backend/app/__pycache__/main.cpython-310.pyc
