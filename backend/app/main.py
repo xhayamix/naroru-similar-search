@@ -28,7 +28,8 @@ m = Doc2Vec.load('./doc2vec/doc2vec.model')
 @app.get("/api/novel/get_all")
 async def getNovels(db: Session = Depends(database.get_db), page: int = 1):
     data = models.novel_datas.Novel_data
-    nove  = db.query(data.id, data.title, data.general_lastup, data.writer, data.ncode, data.story).filter(data.id > page*10 - 10).limit(10).all()
+    stop = (page - 1) * 10
+    nove  = db.query(data.id, data.title, data.general_lastup, data.writer, data.ncode, data.story).offset(stop).limit(10).all()
     return nove
 
 @app.get("/api/novel/count")
@@ -41,8 +42,8 @@ async def countNovels(db: Session = Depends(database.get_db)):
 async def getNovelByKeyword(db: Session = Depends(database.get_db), page: int = 1, keyword: str = ""):
     data = models.novel_datas.Novel_data
     keyword = "%" + keyword + "%"
-    stop = page - 1
-    nove = db.query(data.id, data.title, data.general_lastup, data.writer, data.ncode, data.story, data.keyword).filter(or_(data.title.like(keyword), data.story.like(keyword), data.keyword.like(keyword))).offset(stop * 10).limit(10).all()
+    stop = (page - 1) * 10
+    nove = db.query(data.id, data.title, data.general_lastup, data.writer, data.ncode, data.story, data.keyword).filter(or_(data.title.like(keyword), data.story.like(keyword), data.keyword.like(keyword))).offset(stop).limit(10).all()
     return nove
 
 @app.get("/api/novel_by_keyword/count")
