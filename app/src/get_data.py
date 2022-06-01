@@ -8,11 +8,12 @@ import datetime
 import gzip
 from tqdm import tqdm
 tqdm.pandas()
-import mysql.connector as mysql
 import sqlalchemy as sa
+from time import sleep
 
 
 import numpy as np
+import schedule
 
 ### dbの設定####
 user_name = "narou"
@@ -38,11 +39,10 @@ else:
     sql_url = f'mysql+pymysql://{user}:{password}@{host}:{port}/{database}'
     api_url="https://api.syosetu.com/novel18api/api/"
 # データをSqlite3形式でも保存する
-is_save_sqlite = False
-
-
 
 engine = sa.create_engine(sql_url, encoding='utf-8', echo=False)
+
+
 #####　以上設定、以下関数　##############
     
 #全作品情報の取得
@@ -58,14 +58,14 @@ def get_all_novel_info():
     
     
     all_queue_cnt = (allcount // 500) + 10
-    
+    all_queue_cnt = 1
 
     #現在時刻を取得
     nowtime = datetime.datetime.now().timestamp()
     lastup = int(nowtime)
                      
     for i in tqdm(range(all_queue_cnt)):
-        payload = {'out': 'json','gzip':5,'opt':'weekly','of':'t-n-u-w-s-g-k-gf-gl-nt-e-ga-l-ti-gp-dp-wp-mp-qp-yp-f-nu','lim':500,'lastup':"1073779200-"+str(lastup)}
+        payload = {'out': 'json','gzip':5,'of':'t-n-u-w-s-g-k-gf-gl-nt-e-ga-l-ti-gp-dp-wp-mp-qp-yp-f-nu','lim':5,'lastup':"1073779200-"+str(lastup)}
         #print(payload)
         
         # なろうAPIにリクエスト
@@ -100,8 +100,10 @@ def get_all_novel_info():
         #取得間隔を空ける
         tm.sleep(interval)
         
+        df['searchbykey'] = df['title'] + df['story'] + df['keyword']
+        
         dump_to_sql(df)
-    
+        create_model(df)
         
         
 def dump_to_sql(df):
@@ -109,16 +111,32 @@ def dump_to_sql(df):
     # 重複行を削除する
     df.drop_duplicates(subset='ncode', inplace=True)
     df = df.reset_index(drop=True)
+    df.index = df.index + 1
 
     #df = df["keyword"]
     
+    #print(df['searchbykey'])
+    #df.to_sql('novel_data', engine, index=True, method = "multi",chunksize = 10000 ,if_exists='replace')
     
-    df.to_sql('novel_data', engine, index=False,  
-           method = "multi",chunksize = 10000 ,if_exists='replace')
     
-
+def create_model(df):
+    df_model = df["story"]
+    text = df_model.values.tolist()
+    print(text[0])
+    
+    
+def task():
+    print("start",datetime.datetime.now())
+    get_all_novel_info()
+    print("end",datetime.datetime.now())
+    
+schedule.every(10).seconds.do(task)
     
 #######　関数の実行を指定　##########
-print("start",datetime.datetime.now())
-get_all_novel_info()
-print("end",datetime.datetime.now())
+task()
+
+"""
+while True:
+    schedule.run_pending()
+    sleep(1)
+"""
