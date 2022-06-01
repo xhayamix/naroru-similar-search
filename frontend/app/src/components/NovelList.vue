@@ -11,6 +11,7 @@
       :perPage="perPage"
       :totalPages="totalPages"
       @currentPage="getCurrentPage"
+      v-if="list.length"
     ></BasePagination>
 
     <div v-for="novel in list" v-bind:key="novel.id">
@@ -38,6 +39,7 @@
       :perPage="perPage"
       :totalPages="totalPages"
       @currentPage="getCurrentPage"
+      v-if="list.length"
     ></BasePagination>
 
 
@@ -73,14 +75,12 @@ export default {
     //currentPageがページネーションコンポーネントから送られる現在のページ
     getCurrentPage(currentPage) {
       this.currentPage = currentPage;
-      console.log(this.totalPages);
       //APIを呼び直す
       this.getData(currentPage);
       window.scrollTo(0, 0);
     },
     //APIからのデータ取得
     getData: async function(currentPage) {
-      console.log(process.env.VUE_APP_API_DEV);
       const response = await axios.get(process.env.VUE_APP_API_DEV + '/api/novel/get_all', {
           params: {
             page: currentPage,
@@ -88,7 +88,6 @@ export default {
         });
       
       this.list = [];
-      console.log(response);
       response.data.forEach(element =>{
         this.list.push({
           id: element.id,
@@ -104,7 +103,6 @@ export default {
       const count = await axios.get(process.env.VUE_APP_API_DEV + '/api/novel/count');
       this.totalCount = count.data;
       this.totalPages = Math.ceil(parseInt(count.data, 10)/10);
-      console.log(this.totalPages);
     }
 },
 };

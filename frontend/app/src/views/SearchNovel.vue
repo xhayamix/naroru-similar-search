@@ -24,6 +24,7 @@
       :perPage="perPage"
       :totalPages="totalPages"
       @currentPage="getCurrentPage"
+      v-if="list.length"
     ></BasePagination>
 
     <div v-for="novel in list" v-bind:key="novel.id">
@@ -51,6 +52,7 @@
       :perPage="perPage"
       :totalPages="totalPages"
       @currentPage="getCurrentPage"
+      v-if="list.length"
     ></BasePagination>
 
    </div>
@@ -84,7 +86,7 @@ export default {
     //currentPageがページネーションコンポーネントから送られる現在のページ
     getCurrentPage(currentPage) {
       this.currentPage = currentPage;
-      console.log(this.totalPages);
+      console.log(this.currentPage);
       //APIを呼び直す
       this.getData();
       window.scrollTo(0, 0);
@@ -128,9 +130,7 @@ export default {
           }
         });
       this.totalCount = count.data;
-      console.log(this.totalCount);
       this.totalPages = Math.ceil(parseInt(count.data, 10)/10);
-      console.log(this.totalPages);
     }
   },
 };

@@ -162,7 +162,6 @@ export default {
         let url = process.env.VUE_APP_API_DEV + '/api/novel/get/' + this.id;
         const response = await axios.get(url);
         this.novel =response.data[0];
-        console.log(this.novel.id);
     }
   },
 };
