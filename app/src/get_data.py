@@ -116,7 +116,16 @@ def dump_to_sql(df):
     #df = df["keyword"]
     
     #print(df['searchbykey'])
-    #df.to_sql('novel_data', engine, index=True, method = "multi",chunksize = 10000 ,if_exists='replace')
+    df.to_sql('novel_data', engine, index=True, method = "multi",chunksize = 10000 ,if_exists='replace')
+    
+    #indexをはる
+    con = engine.connect()
+    
+    #con.execute("create index id_index on novel_data(`index`);")
+    con.execute("create index ncode_index on novel_data(ncode(8));")
+    
+    
+    con.close()
     
     
 def create_model(df):
