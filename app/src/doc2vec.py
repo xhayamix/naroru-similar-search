@@ -23,47 +23,33 @@ engine = sa.create_engine(sql_url, encoding='utf-8', echo=False)
 query = "select story from novel_data"
 df = pd.read_sql(query,con = engine)
 text = df.values.tolist()
-print(len(text))
-
-
-"""
-text = []
-#家電チャンネル読み込み
-for file in glob('kaden-channel/*.txt'):
-    with open(file,encoding="utf-8") as f:        
-        text.append([f.read()])
-
-l_kaden = len(text)
-print('家電チャンネル記事数：',l_kaden)
-        
-#スポーツウォッチ読み込み
-for file in glob('sports-watch/*.txt'):
-    with open(file,encoding="utf-8") as f:        
-        text.append([f.read()])     
-
-print('スポーツチャンネル記事数：',len(text)-l_kaden)
-"""
-
 
 tagger = MeCab.Tagger("-Ochasen")
 text_wakati= []
+
+for w in text:
+    str = []
+    for d in tagger.parse(w[0]).splitlines():
+        if len(d) > 2:
+            str.append(d.split()[0])
+    text_wakati.append(str)
+
+"""
+for w in text:
+    text_wakati.append([d.split()[0] for d in tagger.parse(w[0]).splitlines()])
+"""    
+
+"""
 for w in text:
   print(tagger.parse(w[0]))
 """
-for w in text:
-  split = tagger.parse(w[0]).split()
-  text_wakati.append(' '.join(split))
-"""
 
-"""
-cnt = 0
-doc_train = []
-for words in text_wakati:
-    doc_train.append(TaggedDocument(words,[cnt]))
-    cnt += 1
+documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(text_wakati)]
 
 print("start")
 
-model = Doc2Vec(doc_train, dm=1, vector_size=300, window=10, min_count=1, workers=4)
+#print(text_wakati[0])
+
+model = Doc2Vec(documents, dm=0, vector_size=150, window=10, min_count=3, workers=4)
 model.save('doc2vec.model')
-"""
+
