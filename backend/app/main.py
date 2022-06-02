@@ -35,7 +35,7 @@ async def getNovels(db: Session = Depends(database.get_db), page: int = 1):
 @app.get("/api/novel/count")
 async def countNovels(db: Session = Depends(database.get_db)):
     data = models.novel_datas.Novel_data
-    count = db.query(data).count()
+    count = db.query(data.id).count()
     return count
 
 @app.get("/api/novel/get_by_keyword")
@@ -50,7 +50,7 @@ async def getNovelByKeyword(db: Session = Depends(database.get_db), page: int = 
 async def countKeywordNovels(db: Session = Depends(database.get_db), keyword: str = ""):
     data = models.novel_datas.Novel_data
     keyword = "%" + keyword + "%"
-    count = db.query(data.title, data.story, data.keyword).filter(or_(data.title.like(keyword), data.story.like(keyword), data.keyword.like(keyword))).count()
+    count = db.query(data.id).filter(or_(data.title.like(keyword), data.story.like(keyword), data.keyword.like(keyword))).count()
     return count
 
 @app.get("/api/novel/get/{novel_id}")
