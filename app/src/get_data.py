@@ -11,6 +11,10 @@ tqdm.pandas()
 import sqlalchemy as sa
 from time import sleep
 
+from gensim.models.doc2vec import TaggedDocument
+from gensim.models.doc2vec import Doc2Vec
+import MeCab
+
 
 import numpy as np
 import schedule
@@ -58,14 +62,13 @@ def get_all_novel_info():
     
     
     all_queue_cnt = (allcount // 500) + 10
-    all_queue_cnt = 1
 
     #現在時刻を取得
     nowtime = datetime.datetime.now().timestamp()
     lastup = int(nowtime)
                      
     for i in tqdm(range(all_queue_cnt)):
-        payload = {'out': 'json','gzip':5,'of':'t-n-u-w-s-g-k-gf-gl-nt-e-ga-l-ti-gp-dp-wp-mp-qp-yp-f-nu','lim':5,'lastup':"1073779200-"+str(lastup)}
+        payload = {'out': 'json','gzip':5,'of':'t-n-u-w-s-g-k-gf-gl-nt-e-ga-l-ti-gp-dp-wp-mp-qp-yp-f-nu','lim':500,'lastup':"1073779200-"+str(lastup)}
         #print(payload)
         
         # なろうAPIにリクエスト
@@ -83,14 +86,9 @@ def get_all_novel_info():
     
         # pandasのデータフレームに追加する処理
         df_temp = pd.read_json(r)
-        #print(df_temp["general_lastup"].head(2))
-        #print(df_temp["general_lastup"].tail(1))
+
         df_temp = df_temp.drop(0)
         df = pd.concat([df, df_temp])
-        
-        #df = df.reset_index(drop=True)
-        #print(df["general_lastup"].head(1))
-        #print(df["general_lastup"].tail(1))
         
         last_general_lastup = df.iloc[-1]["general_lastup"]
         lastup = datetime.datetime.strptime(last_general_lastup, "%Y-%m-%d %H:%M:%S").timestamp()
@@ -131,7 +129,26 @@ def dump_to_sql(df):
 def create_model(df):
     df_model = df["story"]
     text = df_model.values.tolist()
-    print(text[0])
+    #print(text[0])
+    
+    tagger = MeCab.Tagger("-Ochasen")
+    text_wakati= []
+
+    for w in text:
+        str = []
+        for d in tagger.parse(w[0]).splitlines():
+            if len(d) > 2:
+                str.append(d.split()[0])
+        text_wakati.append(str)
+        
+    documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(text_wakati)]
+
+    print("start")
+
+    #print(text_wakati[0])
+
+    model = Doc2Vec(documents, dm=0, vector_size=150, window=10, min_count=3, workers=4)
+    model.save('doc2vec.model')
     
     
 def task():
