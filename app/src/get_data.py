@@ -100,8 +100,9 @@ def get_all_novel_info():
         
         df['searchbykey'] = df['title'] + df['story'] + df['keyword']
         
-        dump_to_sql(df)
         create_model(df)
+        dump_to_sql(df)
+        
         
         
 def dump_to_sql(df):
