@@ -2,10 +2,10 @@ version: '3.10'
 
 services:
   app:
-    build: ./app 
+    build: ./backend/app/doc2vec
     container_name: app
     volumes:
-      - ./app/src:/app
+      - ./backend/app/doc2vec:/app
     tty: true
     
 
