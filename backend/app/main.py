@@ -38,6 +38,13 @@ async def countNovels(db: Session = Depends(database.get_db)):
     count = db.query(data.index).count()
     return count
 
+@app.get("/api/novel/get_by_ncode")
+async def getNovelByNcode(db: Session = Depends(database.get_db), ncode: str = ""):
+    data = models.novel_datas.Novel_data
+    nove = db.query(data.index, data.title, data.general_lastup, data.writer, data.ncode, data.story, data.keyword).filter(data.ncode == ncode).all()
+    return nove
+
+
 @app.get("/api/novel/get_by_keyword")
 async def getNovelByKeyword(db: Session = Depends(database.get_db), page: int = 1, keyword: str = ""):
     data = models.novel_datas.Novel_data

@@ -14,6 +14,12 @@
         />
       </div>
       <div class="col-auto">
+        <select class="form-control" v-model="selected">
+          <option value="0" selected>キーワード</option>
+          <option value="1">Nコード</option>
+        </select>
+      </div>
+      <div class="col-auto">
         <button class="btn btn-primary" v-on:click="search(keyword,1)">検索</button>
       </div>
     </div>
@@ -76,7 +82,8 @@ export default {
       totalPages: 0, //総ページ数
       list: [],
 
-      keyword : ""
+      selected: "",
+      keyword: ""
     };
   },
   components: {
@@ -98,8 +105,15 @@ export default {
       }
       this.currentPage = currentPage;
       this.keyword = keyword;
-      this.getCount();
-      this.getData();
+      if(this.selected == "0"){
+        this.getCount();
+        this.getData();
+      } else {
+        this.getDatabyncode();
+        this.totalCount = 1;
+        this.totalPages = 1;
+      }
+      
     },
     getData: async function() {
       console.log(this.keyword)
@@ -131,6 +145,25 @@ export default {
         });
       this.totalCount = count.data;
       this.totalPages = Math.ceil(parseInt(count.data, 10)/10);
+    },
+    getDatabyncode: async function(){
+      const response = await axios.get(process.env.VUE_APP_API_DEV + '/api/novel/get_by_ncode', {
+          params: {
+            ncode: this.keyword
+          }
+        });
+
+      this.list = [];
+      response.data.forEach(element =>{
+        this.list.push({
+          index: element.index,
+          title: element.title,
+          general_lastup: element.general_lastup,
+          writer: element.writer,
+          ncode: element.ncode,
+          story: element.story,
+        })
+      });
     }
   },
 };
