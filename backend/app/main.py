@@ -29,7 +29,7 @@ m = Doc2Vec.load('./doc2vec/doc2vec.model')
 async def getNovels(db: Session = Depends(database.get_db), page: int = 1):
     data = models.novel_datas.Novel_data
     stop = (page - 1) * 10
-    nove  = db.query(data.index, data.title, data.general_lastup, data.writer, data.ncode, data.story).offset(stop).limit(10).all()
+    nove  = db.query(data.index, data.title, data.general_lastup, data.writer, data.ncode, data.story).filter(data.index > stop).limit(10).all()
     return nove
 
 @app.get("/api/novel/count")

@@ -15,7 +15,7 @@
       </div>
       <div class="col-auto">
         <select class="form-control" v-model="selected">
-          <option value="0" selected>キーワード</option>
+          <option value="0">キーワード</option>
           <option value="1">Nコード</option>
         </select>
       </div>
