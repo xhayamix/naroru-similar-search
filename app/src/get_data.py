@@ -98,11 +98,10 @@ def get_all_novel_info():
         #取得間隔を空ける
         tm.sleep(interval)
         
-    df['searchbykey'] = df['title'] + df['story'] + df['keyword']
-    
-    create_model(df)
-    dump_to_sql(df)
         
+    df['searchbykey'] = df['title'] + df['story'] + df['keyword']    
+    dump_to_sql(df)
+    create_model(df)
         
         
 def dump_to_sql(df):
@@ -114,7 +113,7 @@ def dump_to_sql(df):
 
     #df = df["keyword"]
     
-    #print(df['searchbykey'])
+    print("start sql")
     df.to_sql('novel_data', engine, index=True, method = "multi",chunksize = 1000 ,if_exists='replace')
     
     #indexをはる
@@ -123,7 +122,7 @@ def dump_to_sql(df):
     #con.execute("create index id_index on novel_data(`index`);")
     con.execute("create index ncode_index on novel_data(ncode(8));")
     con.execute("alter table novel_data add primary key(`index`);")
-    
+    print("end sql")
     
     con.close()
     
@@ -131,7 +130,6 @@ def dump_to_sql(df):
 def create_model(df):
     df_model = df["story"]
     text = df_model.values.tolist()
-    #print(text[0])
     
     tagger = MeCab.Tagger("-Ochasen")
     text_wakati= []
@@ -147,7 +145,6 @@ def create_model(df):
 
     print("start")
 
-    #print(text_wakati[0])
 
     model = Doc2Vec(documents, dm=0, vector_size=150, window=10, min_count=3, workers=4)
     model.save('doc2vec.model')
@@ -158,13 +155,12 @@ def task():
     get_all_novel_info()
     print("end",datetime.datetime.now())
     
-schedule.every(10).seconds.do(task)
+schedule.every(1).weeks.do(task)
     
 #######　関数の実行を指定　##########
-task()
 
-"""
+
+
 while True:
     schedule.run_pending()
     sleep(1)
-"""
