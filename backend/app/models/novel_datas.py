@@ -13,7 +13,6 @@ class Novel_data(Base):
     story = Column(Text)
     genre = Column(Integer)
     keyword = Column(Text)
-    searchbykey = Column(Text)
     general_firstup = Column(Text)
     general_lastup = Column(Text)
     novel_type = Column(Integer)
@@ -29,3 +28,4 @@ class Novel_data(Base):
     yearly_point = Column(Integer)
     fav_novel_cnt = Column(Integer)
     novelupdated_at = Column(DateTime)
+    searchbykey = Column(Text)

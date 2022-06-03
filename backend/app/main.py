@@ -43,7 +43,7 @@ async def getNovelByKeyword(db: Session = Depends(database.get_db), page: int = 
     data = models.novel_datas.Novel_data
     keyword = "%" + keyword + "%"
     stop = (page - 1) * 10
-    nove = db.query(data.id, data.title, data.general_lastup, data.writer, data.ncode, data.story, data.keyword).filter(or_(data.title.like(keyword), data.story.like(keyword), data.keyword.like(keyword))).offset(stop).limit(10).all()
+    nove = db.query(data.id, data.title, data.general_lastup, data.writer, data.ncode, data.story, data.keyword).filter(data.searchbykey.like(keyword)).offset(stop).limit(10).all()
     return nove
 
 @app.get("/api/novel_by_keyword/count")
