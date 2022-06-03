@@ -29,13 +29,13 @@ m = Doc2Vec.load('./doc2vec/doc2vec.model')
 async def getNovels(db: Session = Depends(database.get_db), page: int = 1):
     data = models.novel_datas.Novel_data
     stop = (page - 1) * 10
-    nove  = db.query(data.id, data.title, data.general_lastup, data.writer, data.ncode, data.story).offset(stop).limit(10).all()
+    nove  = db.query(data.index, data.title, data.general_lastup, data.writer, data.ncode, data.story).offset(stop).limit(10).all()
     return nove
 
 @app.get("/api/novel/count")
 async def countNovels(db: Session = Depends(database.get_db)):
     data = models.novel_datas.Novel_data
-    count = db.query(data.id).count()
+    count = db.query(data.index).count()
     return count
 
 @app.get("/api/novel/get_by_keyword")
@@ -43,20 +43,20 @@ async def getNovelByKeyword(db: Session = Depends(database.get_db), page: int = 
     data = models.novel_datas.Novel_data
     keyword = "%" + keyword + "%"
     stop = (page - 1) * 10
-    nove = db.query(data.id, data.title, data.general_lastup, data.writer, data.ncode, data.story, data.keyword).filter(data.searchbykey.like(keyword)).offset(stop).limit(10).all()
+    nove = db.query(data.index, data.title, data.general_lastup, data.writer, data.ncode, data.story, data.keyword).filter(data.searchbykey.like(keyword)).offset(stop).limit(10).all()
     return nove
 
 @app.get("/api/novel_by_keyword/count")
 async def countKeywordNovels(db: Session = Depends(database.get_db), keyword: str = ""):
     data = models.novel_datas.Novel_data
     keyword = "%" + keyword + "%"
-    count = db.query(data.id).filter(or_(data.title.like(keyword), data.story.like(keyword), data.keyword.like(keyword))).count()
+    count = db.query(data.index).filter(data.searchbykey.like(keyword)).count()
     return count
 
 @app.get("/api/novel/get/{novel_id}")
 async def getNovel(novel_id :int, db: Session = Depends(database.get_db)):
     data = models.novel_datas.Novel_data
-    nove  = db.query(data).filter(data.id == novel_id).all()
+    nove  = db.query(data).filter(data.index == novel_id).all()
     return nove
 
 
