@@ -15,7 +15,7 @@ class Novel_data(Base):
     keyword = Column(Text)
     general_firstup = Column(Text)
     general_lastup = Column(Text)
-    novel_type = Column(Integer)
+    noveltype = Column(Integer)
     end = Column(Integer)
     general_all_no = Column(Integer)
     length = Column(Integer)
