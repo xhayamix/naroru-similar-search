@@ -98,10 +98,10 @@ def get_all_novel_info():
         #取得間隔を空ける
         tm.sleep(interval)
         
-        df['searchbykey'] = df['title'] + df['story'] + df['keyword']
-        
-        create_model(df)
-        dump_to_sql(df)
+    df['searchbykey'] = df['title'] + df['story'] + df['keyword']
+    
+    create_model(df)
+    dump_to_sql(df)
         
         
         
@@ -115,13 +115,14 @@ def dump_to_sql(df):
     #df = df["keyword"]
     
     #print(df['searchbykey'])
-    df.to_sql('novel_data', engine, index=True, method = "multi",chunksize = 10000 ,if_exists='replace')
+    df.to_sql('novel_data', engine, index=True, method = "multi",chunksize = 1000 ,if_exists='replace')
     
     #indexをはる
     con = engine.connect()
     
     #con.execute("create index id_index on novel_data(`index`);")
     con.execute("create index ncode_index on novel_data(ncode(8));")
+    con.execute("alter table novel_data add primary key(`index`);")
     
     
     con.close()

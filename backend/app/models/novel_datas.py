@@ -5,7 +5,7 @@ from database import Base
 class Novel_data(Base):
     __tablename__ = "novel_data"
     
-    id = Column(Integer, primary_key=True, index=True)
+    index = Column(Integer, primary_key=True, index=True)
     title = Column(Text)
     ncode = Column(Text)
     userid = Column(Integer)
@@ -13,6 +13,7 @@ class Novel_data(Base):
     story = Column(Text)
     genre = Column(Integer)
     keyword = Column(Text)
+    searchbykey = Column(Text)
     general_firstup = Column(Text)
     general_lastup = Column(Text)
     novel_type = Column(Integer)
