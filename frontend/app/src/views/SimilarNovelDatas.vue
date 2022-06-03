@@ -2,12 +2,12 @@
   <div>
     <h2 class="mb-2" id="top" v-cloak>類似検索</h2>
     <small>{{novel.ncode}}</small>
-    <h3 class="mb-5"><router-link :to="'/novel/' + novel.id">{{novel.title}}</router-link></h3>
+    <h3 class="mb-5"><router-link :to="'/novel/' + novel.index">{{novel.title}}</router-link></h3>
 
-    <div v-for="(novel, index) in similarlist" v-bind:key="novel.id">
+    <div v-for="(novel, index) in similarlist" v-bind:key="novel.index">
       <div class="card mt-2 mb-2 bg-light">
         <div class="card-body">
-          <h4 class="card-title"><router-link :to="'/novel/' + novel.id">{{index + 1}}：{{ novel.title }}</router-link></h4>
+          <h4 class="card-title"><router-link :to="'/novel/' + novel.index">{{index + 1}}：{{ novel.title }}</router-link></h4>
           <h5 class="card-subtitle text-muted pl-3">作者：{{ novel.writer }}</h5>
           <div class='contenedor'>
             <input v-bind:id="novel.ncode" type="checkbox"/>
@@ -38,23 +38,23 @@ export default {
     };
   },
   mounted() {
-    this.id = this.$route.params.id;
+    this.index = this.$route.params.index;
     this.getData();
   },
   methods: {
     //APIからのデータ取得
     getData: async function() {
-        let currentid = this.id -1;
+        let currentid = this.index -1;
         let url = process.env.VUE_APP_API_DEV + '/api/siminovel/get/' + currentid;
         const response = await axios.get(url);
         console.log(response.data[0][0]);
         for(let i = 0;i < 10;i++){
-            let id = response.data[i][0] - 1;
-            url = process.env.VUE_APP_API_DEV + '/api/novel/get/' + id;
+            let index = response.data[i][0] - 1;
+            url = process.env.VUE_APP_API_DEV + '/api/novel/get/' + index;
             let simiresponse = await axios.get(url);
             this.similarlist.push(simiresponse.data[0]);
         }
-        url = process.env.VUE_APP_API_DEV + '/api/novel/get/' + this.id;
+        url = process.env.VUE_APP_API_DEV + '/api/novel/get/' + this.index;
         const currentresponse = await axios.get(url);
         this.novel =currentresponse.data[0];
     },

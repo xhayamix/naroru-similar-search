@@ -7,7 +7,7 @@
     <span class="mr-3" id="noveltype" v-else-if="novel.novel_type === 1">完結</span>
     <span class="mr-3" id="noveltype" v-else>短編</span>
     <a class="mr-3" v-bind:href="'https://ncode.syosetu.com/' + novel.ncode" target="_blank">小説を読む</a>
-    <a class="mr-3" href="">類似作品検索</a>
+    <a class="mr-3" href=""><router-link :to="'/siminovel/get/' + novel.index">類似作品検索</router-link></a>
   </div>
   <div class="card mt-2 mb-2 bg-light">
     <div class="card-body">
@@ -55,7 +55,7 @@
   </div>
 
   <div id="similar-button" v-cloak>
-    <a href=""><router-link :to="'/siminovel/get/' + novel.id">類似検索</router-link></a>
+    <a href=""><router-link :to="'/siminovel/get/' + novel.index">類似検索</router-link></a>
   </div>
 
   <div class="d-flex justify-content-between mt-3">
@@ -149,17 +149,17 @@ export default {
   data() {
     return {
       novel: [],
-      id: 1
+      index: 1
     };
   },
   mounted() {
-    this.id = this.$route.params.id;
+    this.index = this.$route.params.index;
     this.getNovel();
   },
   methods: {
     //APIからのデータ取得
     getNovel: async function() {
-        let url = process.env.VUE_APP_API_DEV + '/api/novel/get/' + this.id;
+        let url = process.env.VUE_APP_API_DEV + '/api/novel/get/' + this.index;
         const response = await axios.get(url);
         this.novel =response.data[0];
     }

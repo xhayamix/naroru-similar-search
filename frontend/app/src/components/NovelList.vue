@@ -14,10 +14,10 @@
       v-if="list.length"
     ></BasePagination>
 
-    <div v-for="novel in list" v-bind:key="novel.id">
+    <div v-for="novel in list" v-bind:key="novel.index">
       <div class="card mt-2 mb-2 bg-light">
         <div class="card-body">
-          <h4 class="card-title"><router-link :to="'/novel/' + novel.id">{{ novel.title }}</router-link></h4>
+          <h4 class="card-title"><router-link :to="'/novel/' + novel.index">{{ novel.title }}</router-link></h4>
           <h5 class="card-subtitle text-muted pl-3">作者：{{ novel.writer }}</h5>
           <div class='contenedor'>
             <input v-bind:id="novel.ncode" type="checkbox"/>
@@ -90,7 +90,7 @@ export default {
       this.list = [];
       response.data.forEach(element =>{
         this.list.push({
-          id: element.id,
+          index: element.index,
           title: element.title,
           general_lastup: element.general_lastup,
           writer: element.writer,

@@ -19,11 +19,11 @@ const routes = [
     component: SearchNovel
   },
   {
-    path: '/novel/:id',
+    path: '/novel/:index',
     component: NovelDetail
   },
   {
-    path: '/siminovel/get/:id',
+    path: '/siminovel/get/:index',
     component: SimilarNovelDatas
   }
 ]
