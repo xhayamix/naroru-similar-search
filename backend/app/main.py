@@ -1,8 +1,4 @@
-import re
-from tkinter.tix import Tree
-from fastapi import FastAPI, Depends, Header, Request
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Depends
 from starlette.middleware.cors import CORSMiddleware
 
 from gensim.models.doc2vec import Doc2Vec
